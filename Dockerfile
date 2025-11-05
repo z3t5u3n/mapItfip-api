@@ -1,5 +1,5 @@
 # Usa una imagen base de PHP oficial con Apache
-FROM php:8.1-apache
+FROM php:8.3-apache
 
 # Instala las dependencias necesarias de PHP para Laravel (ej: pdo, zip, gd)
 RUN docker-php-ext-install pdo_mysql zip
