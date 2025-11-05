@@ -1,8 +1,19 @@
-# Usa una imagen base de PHP oficial con Apache
-FROM php:8.1-apache
+FROM php:8.3-apache
 
-# Instala las dependencias necesarias de PHP para Laravel (ej: pdo, zip, gd)
-RUN docker-php-ext-install pdo_mysql zip
+# 1. INSTALAR DEPENDENCIAS DE LINUX (FIX para libzip)
+RUN apt-get update && \
+    apt-get install -y \
+    libzip-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libpq-dev \
+    nodejs \
+    npm \
+    && rm -rf /var/lib/apt/lists/*
+RUN npm install -g yarn
+
+# 2. INSTALAR EXTENSIONES DE PHP
+RUN docker-php-ext-install pdo_pgsql zip gd
 
 # Instala Composer globalmente
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -13,16 +24,18 @@ COPY . /var/www/html/
 # Configura las dependencias de Laravel
 RUN composer install --no-dev --optimize-autoloader
 
-# Establece los permisos correctos para las carpetas de almacenamiento y caché
+# Establece los permisos correctos
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Cambia el directorio de trabajo
 WORKDIR /var/www/html
 
-# Ajusta la configuración del servidor web (Apache) para que apunte a la carpeta /public de Laravel
+# Ajusta la configuración del servidor web (Apache)
 RUN a2enmod rewrite
 COPY .docker/000-default.conf /etc/apache2/sites-available/000-default.conf
 
-# El comando por defecto (Apache ya está configurado para servir)
-CMD ["apache2-foreground"]
+# Copia el script de inicio, le da permisos de ejecución y lo establece como CMD
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+CMD ["/usr/local/bin/entrypoint.sh"]
