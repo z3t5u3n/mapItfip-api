@@ -19,24 +19,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MAPITFIP</title>
 
-    {{-- ✅ Cargar CSS principal en HTTPS --}}
-    @if ($mainCss)
-        <link rel="stylesheet" href="{{ secure_asset('build' . $mainCss) }}">
-    @else
-        <script>console.warn("⚠️ No se encontró main.css en asset-manifest.json")</script>
-    @endif
+    {{-- ✅ VITE CARGA AUTOMÁTICAMENTE LOS ARCHIVOS CSS/JS --}}
+    {{-- La directiva @vite busca los archivos en el 'manifest.json' generado por la compilación --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
     {{-- Contenedor donde se montará React --}}
     <div id="root">
         <noscript>Debes habilitar JavaScript para ejecutar esta aplicación.</noscript>
     </div>
-
-    {{-- ✅ Cargar JS principal en HTTPS --}}
-    @if ($mainJs)
-        <script src="{{ secure_asset('build' . $mainJs) }}" defer></script>
-    @else
-        <script>console.error("❌ No se encontró main.js en asset-manifest.json")</script>
-    @endif
 </body>
 </html>
