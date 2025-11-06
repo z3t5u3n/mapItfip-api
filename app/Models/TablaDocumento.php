@@ -12,4 +12,8 @@ class TablaDocumento extends Model
     protected $table = 'TablaDocumento'; // Nombre de la tabla
     protected $primaryKey = 'IdDocumento'; // Clave primaria de la tabla
     public $timestamps = false; // Si tu tabla no tiene columnas created_at y updated_at
+    public function estudiantes()
+    {
+        return $this->hasMany(TablaEstudiante::class, 'IdDocumento', 'IdDocumento');
+    }
 }
