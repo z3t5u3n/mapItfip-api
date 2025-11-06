@@ -41,10 +41,10 @@ class TablaCarrera extends Model
 
     // Si tuvieras relaciones con otras tablas, irían aquí.
     // Por ejemplo, si una Carrera tiene muchos Estudiantes:
-    /*
+    
     public function estudiantes()
     {
         return $this->hasMany(TablaEstudiante::class, 'IdCarrera', 'IdCarrera');
     }
-    */
+    
 }
