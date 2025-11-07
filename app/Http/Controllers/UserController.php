@@ -15,6 +15,7 @@ use App\Models\TablaProfesor;
 use App\Models\TablaCarrera;
 use App\Models\TablaSemestre;
 use App\Models\TablaRol;
+use Illuminate\Support\Facades\Log; // Añadido para logging
 
 class UserController extends Controller
 {
@@ -26,45 +27,68 @@ class UserController extends Controller
         return response()->json($request->user()->load('documento', 'rol'));
     }
 
+    // ===================================
+    // 🔹 Rutas de Consulta con manejo de errores (Corregidas)
+    // ===================================
+
     public function historialRegistro()
     {
-        $historial = TablaHistorialRegistro::with('usuario')
-            ->orderBy('Fecha_Sys', 'desc')
-            ->get();
-        return response()->json($historial);
+        try {
+            $historial = TablaHistorialRegistro::with('usuario')
+                ->orderBy('Fecha_Sys', 'desc')
+                ->get();
+            return response()->json($historial, 200);
+        } catch (\Exception $e) {
+            Log::error('Error al obtener historial de registro: ' . $e->getMessage());
+            return response()->json(['message' => 'Error al cargar historial de registro.'], 500);
+        }
     }
 
     public function usuarioRegistro()
     {
-        return response()->json(TablaUsuario::all());
+        try {
+            return response()->json(TablaUsuario::all(), 200);
+        } catch (\Exception $e) {
+            Log::error('Error al obtener usuarios registrados: ' . $e->getMessage());
+            return response()->json(['message' => 'Error al cargar usuarios.'], 500);
+        }
     }
 
     public function usuarioEstudiante()
     {
-        return response()->json(TablaEstudiante::all());
+        try {
+            return response()->json(TablaEstudiante::all(), 200);
+        } catch (\Exception $e) {
+            Log::error('Error al obtener usuarios estudiantes: ' . $e->getMessage());
+            return response()->json(['message' => 'Error al cargar estudiantes.'], 500);
+        }
     }
 
     public function usuarioProfesor()
     {
-        return response()->json(TablaProfesor::all());
+        try {
+            return response()->json(TablaProfesor::all(), 200);
+        } catch (\Exception $e) {
+            Log::error('Error al obtener usuarios profesores: ' . $e->getMessage());
+            return response()->json(['message' => 'Error al cargar profesores.'], 500);
+        }
     }
 
     public function getCarreras()
-{
-    try {
-        // Asegúrate de usar la clase con el namespace correcto
-        return response()->json(\App\Models\TablaCarrera::all()); 
-    } catch (\Exception $e) {
-        // Loguea el error real. Esto es crucial para el diagnóstico.
-        \Log::error('Error al cargar carreras (Protected): ' . $e->getMessage());
-        return response()->json(['message' => 'Error interno al cargar carreras.'], 500);
-    }
-}
-
-   public function getSemestres()
     {
-        // Esta función es llamada tanto por rutas públicas como protegidas.
-        // El try-catch es vital para evitar el 500.
+        // Esta es la ruta que fallaba: ahora con try-catch robusto
+        try {
+            return response()->json(TablaCarrera::all(), 200); 
+        } catch (\Exception $e) {
+            // Loguea el error real y devuelve 500.
+            Log::error('Error al obtener carreras: ' . $e->getMessage());
+            return response()->json(['message' => 'Error al cargar carreras.'], 500);
+        }
+    }
+
+    public function getSemestres()
+    {
+        // Esta es la ruta que fallaba: ahora con try-catch robusto
         try {
             return response()->json(TablaSemestre::all(), 200);
         } catch (\Exception $e) {
@@ -72,11 +96,24 @@ class UserController extends Controller
             return response()->json(['message' => 'Error al cargar semestres.'], 500);
         }
     }
+    
+    public function getRoles()
+    {
+        try {
+            $roles = TablaRol::all();
+            return response()->json($roles, 200);
+        } catch (\Exception $e) {
+            \Log::error('Error fetching roles: ' . $e->getMessage());
+            return response()->json(['message' => 'Error cargando roles'], 500);
+        }
+    }
+
     // ============================================================
     // 🔹 Actualiza el rol y envía correo de activación (pendiente)
     // ============================================================
     public function updateRoleAndData(Request $request)
     {
+        // El try-catch en esta función ya estaba bien implementado
         $request->validate([
             'userId' => 'required|string|exists:TablaUsuario,IdUsuario',
             'newRoleId' => 'required|integer|exists:TablaRol,IdRol',
@@ -172,6 +209,7 @@ class UserController extends Controller
     // ============================================================
     public function activarCambioRol(Request $request, $token)
     {
+        // No requiere try-catch extenso, la lógica principal es la búsqueda.
         $usuario = TablaUsuario::where('activation_token', $token)->first();
 
         if (!$usuario) {
@@ -230,22 +268,15 @@ class UserController extends Controller
             return response()->json(['active' => false, 'message' => 'El correo no pertenece al dominio institucional.'], 200);
         }
 
-        $usuario = TablaUsuario::where('NumeroDocumento', Auth::user()->NumeroDocumento ?? null)->first();
-        if (!$usuario) {
-            return response()->json(['active' => false, 'message' => 'No se encontró el usuario autenticado.'], 404);
-        }
-
-        return response()->json(['active' => true, 'message' => 'El correo institucional es válido y activo.'], 200);
-    }
-
-    public function getRoles()
-    {
         try {
-            $roles = TablaRol::all();
-            return response()->json($roles, 200);
-        } catch (\Exception $e) {
-            \Log::error('Error fetching roles: ' . $e->getMessage());
-            return response()->json(['message' => 'Error cargando roles'], 500);
-        }
+             $usuario = TablaUsuario::where('NumeroDocumento', Auth::user()->NumeroDocumento ?? null)->first();
+             if (!$usuario) {
+                 return response()->json(['active' => false, 'message' => 'No se encontró el usuario autenticado.'], 404);
+             }
+             return response()->json(['active' => true, 'message' => 'El correo institucional es válido y activo.'], 200);
+         } catch (\Exception $e) {
+             Log::error('Error al verificar email institucional: ' . $e->getMessage());
+             return response()->json(['message' => 'Error interno al verificar correo.'], 500);
+         }
     }
 }
