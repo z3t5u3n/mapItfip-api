@@ -9,42 +9,17 @@ class TablaCarrera extends Model
 {
     use HasFactory;
 
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'TablaCarrera'; // Define el nombre de la tabla
+    protected $table = 'TablaCarrera';
+    protected $primaryKey = 'IdCarrera';
+    public $timestamps = false;
+    protected $fillable = ['Carrera'];
 
-    /**
-     * The primary key associated with the table.
-     *
-     * @var string
-     */
-    protected $primaryKey = 'IdCarrera'; // Define la clave primaria de la tabla
-
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
-    public $timestamps = false; // Desactiva los timestamps (created_at, updated_at) ya que no los tienes en esta tabla
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'Carrera', // Campo que se puede asignar masivamente
-    ];
-
-    // Si tuvieras relaciones con otras tablas, irían aquí.
-    // Por ejemplo, si una Carrera tiene muchos Estudiantes:
+    // AÑADIDO: Corrección de tipo para PostgreSQL (SMALLINT)
+    protected $keyType = 'int'; 
+    public $incrementing = true;
     
     public function estudiantes()
     {
         return $this->hasMany(TablaEstudiante::class, 'IdCarrera', 'IdCarrera');
     }
-    
 }
