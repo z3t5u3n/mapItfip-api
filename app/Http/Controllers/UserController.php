@@ -50,15 +50,28 @@ class UserController extends Controller
     }
 
     public function getCarreras()
-    {
-        return response()->json(TablaCarrera::all());
+{
+    try {
+        // Asegúrate de usar la clase con el namespace correcto
+        return response()->json(\App\Models\TablaCarrera::all()); 
+    } catch (\Exception $e) {
+        // Loguea el error real. Esto es crucial para el diagnóstico.
+        \Log::error('Error al cargar carreras (Protected): ' . $e->getMessage());
+        return response()->json(['message' => 'Error interno al cargar carreras.'], 500);
     }
+}
 
-    public function getSemestres()
+   public function getSemestres()
     {
-        return response()->json(TablaSemestre::all());
+        // Esta función es llamada tanto por rutas públicas como protegidas.
+        // El try-catch es vital para evitar el 500.
+        try {
+            return response()->json(TablaSemestre::all(), 200);
+        } catch (\Exception $e) {
+            Log::error('Error al obtener semestres: ' . $e->getMessage());
+            return response()->json(['message' => 'Error al cargar semestres.'], 500);
+        }
     }
-
     // ============================================================
     // 🔹 Actualiza el rol y envía correo de activación (pendiente)
     // ============================================================
