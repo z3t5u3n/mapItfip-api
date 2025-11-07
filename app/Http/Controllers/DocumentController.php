@@ -20,15 +20,12 @@ class DocumentController extends Controller
             Log::info('Documentos extraídos:', $documentos->toArray());
             return response()->json($documentos, 200);
         } catch (\Exception $e) {
-            // ✅ CÓDIGO DE DEPURACIÓN: Devuelve el mensaje de error exacto de la DB.
+            // Manejo de error limpio sin exponer detalles de la DB
             Log::error('Error al extraer documentos:', [
                 'error' => $e->getMessage(), 
                 'trace' => $e->getTraceAsString()
             ]);
-            return response()->json([
-                'message' => 'Error al cargar tipos de documento.',
-                'debug_error' => $e->getMessage() // <--- LÍNEA DE DEPURACIÓN
-            ], 500);
+            return response()->json(['message' => 'Error al cargar tipos de documento.'], 500);
         }
     }
 }
