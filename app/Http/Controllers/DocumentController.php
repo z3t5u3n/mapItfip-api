@@ -18,14 +18,17 @@ class DocumentController extends Controller
         try {
             $documentos = TablaDocumento::all();
             Log::info('Documentos extraídos:', $documentos->toArray());
-            return response()->json($documentos, 200); // Añadimos código 200 explícito
+            return response()->json($documentos, 200);
         } catch (\Exception $e) {
-            // Manejo detallado del error de base de datos
+            // ✅ CÓDIGO DE DEPURACIÓN: Devuelve el mensaje de error exacto de la DB.
             Log::error('Error al extraer documentos:', [
                 'error' => $e->getMessage(), 
                 'trace' => $e->getTraceAsString()
             ]);
-            return response()->json(['message' => 'Error al cargar tipos de documento.'], 500);
+            return response()->json([
+                'message' => 'Error al cargar tipos de documento.',
+                'debug_error' => $e->getMessage() // <--- LÍNEA DE DEPURACIÓN
+            ], 500);
         }
     }
 }
