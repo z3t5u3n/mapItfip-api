@@ -13,8 +13,7 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'smtp'),
-
+    'default' => env('MAIL_MAILER', 'resend'),
     /*
     |--------------------------------------------------------------------------
     | Mailer Configurations
@@ -94,6 +93,12 @@ return [
                 'postmark',
             ],
         ],
+        'resend' => [
+            'transport' => 'resend',
+            // Esto le dice a Laravel dónde buscar la clave de la API.
+            // key re_6pxpyyZR_ABYjM4N7iMB6567mN4WjhMUC
+            'key' => env('RESEND_API_KEY'),
+        ],
     ],
 
     /*
@@ -107,11 +112,15 @@ return [
     |
     */
 
-    'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => env('MAIL_FROM_NAME', 'Example'),
-    ],
+    // 'from' => [
+    //     'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'), --->original
+    //     'name' => env('MAIL_FROM_NAME', 'Example'),
+    // ],
 
+    'from' => [
+        'address' => env('MAIL_FROM_ADDRESS', 'onboarding@resend.dev'), // Usa tu dominio verificado
+        'name' => env('MAIL_FROM_NAME', 'Mapitfip'),
+    ],
     /*
     |--------------------------------------------------------------------------
     | Markdown Mail Settings

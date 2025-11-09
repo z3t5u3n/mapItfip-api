@@ -1,0 +1,28 @@
+# Archivos y carpetas ignorados para la imagen Docker de la API
+
+# Ignorar carpetas de dependencias y cachés
+/node_modules
+/vendor
+/storage/*.key
+/storage/app/public
+/storage/framework/cache
+/storage/framework/views
+/bootstrap/cache/*.php
+
+# Ignorar archivos de configuración de desarrollo
+.git
+.gitignore
+.env
+.env.testing
+/public/hot
+
+# Ignorar todo el código fuente y compilación del frontend (React/Vite/Unity)
+/public/build
+/resources/js
+/resources/css
+/vite.config.js
+/tsconfig.json
+/package.json
+/package-lock.json
+/yarn.lock
+/Unity

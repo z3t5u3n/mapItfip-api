@@ -41,4 +41,8 @@ COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Establece el comando que se ejecuta al iniciar el contenedor
+<<<<<<< HEAD
 CMD ["/usr/local/bin/entrypoint.sh"]
+=======
+CMD ["/usr/local/bin/entrypoint.sh"]
+>>>>>>> d9461f6 (feat: Integración del driver Resend para envío de correo)
