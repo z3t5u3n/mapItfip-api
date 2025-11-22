@@ -25,12 +25,24 @@ class AuthController extends Controller
     {
         // 1. Validación de los datos
         $validator = Validator::make($request->all(), [
-            'nombre' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\sñÑáéíóúÁÉÍÓÚ]+$/'],
-            'apellidos' => ['nullable', 'string', 'max:255', 'regex:/^[a-zA-Z\sñÑáéíóúÁÉÍÓÚ]+$/'],
-            'documento' => 'required|numeric|unique:TablaUsuario,NumeroDocumento',
-            'tipoDocumento' => 'required|exists:TablaDocumento,IdDocumento',
-            'rol' => 'required|in:Externo,Estudiante,Profesor',
-        ]);
+    'nombre' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\sñÑáéíóúÁÉÍÓÚ]+$/'],
+    'apellidos' => ['nullable', 'string', 'max:255', 'regex:/^[a-zA-Z\sñÑáéíóúÁÉÍÓÚ]+$/'],
+    'documento' => 'required|numeric|unique:TablaUsuario,NumeroDocumento',
+    'tipoDocumento' => 'required|exists:TablaDocumento,IdDocumento',
+    'rol' => 'required|in:Externo,Estudiante,Profesor',
+], [
+    // Mensajes personalizados
+    'nombre.required' => 'El nombre es obligatorio.',
+    'nombre.regex' => 'El nombre solo puede contener letras y espacios.',
+    'apellidos.regex' => 'Los apellidos solo pueden contener letras y espacios.',
+    'documento.required' => 'El número de documento es obligatorio.',
+    'documento.numeric' => 'El documento debe contener solo números.',
+    'documento.unique' => 'Este documento ya está registrado.',
+    'tipoDocumento.required' => 'Debe seleccionar un tipo de documento.',
+    'tipoDocumento.exists' => 'El tipo de documento seleccionado no es válido.',
+    'rol.required' => 'Debe seleccionar un rol.',
+    'rol.in' => 'El rol seleccionado no es válido.'
+]);
 
         if ($validator->fails()) {
             Log::error('Error de validación en el registro:', $validator->errors()->toArray());
