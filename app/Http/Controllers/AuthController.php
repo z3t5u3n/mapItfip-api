@@ -34,7 +34,7 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             Log::error('Error de validación en el registro:', $validator->errors()->toArray());
-            return response()->json(['message' => 'No debn ir campos vacios', 'errors' => $validator->errors()], 422);
+            return response()->json(['message' => 'No debe ir campos vacios', 'errors' => $validator->errors()], 422);
         }
 
         // Mapear el rol de texto a IdRol
