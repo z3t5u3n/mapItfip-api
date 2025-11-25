@@ -34,6 +34,7 @@ class AuthController extends Controller
     // Mensajes personalizados
     'nombre.required' => 'El nombre es obligatorio.',
     'nombre.regex' => 'El nombre solo puede contener letras y espacios.',
+    'apellidos.required' => 'Los apellidos son obligatorios.',
     'apellidos.regex' => 'Los apellidos solo pueden contener letras y espacios.',
     'documento.required' => 'El número de documento es obligatorio.',
     'documento.numeric' => 'El documento debe contener solo números.',
