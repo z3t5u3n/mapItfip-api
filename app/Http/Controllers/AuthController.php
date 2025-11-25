@@ -27,7 +27,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
     'nombre' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\sñÑáéíóúÁÉÍÓÚ]+$/'],
     'apellidos' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\sñÑáéíóúÁÉÍÓÚ]+$/'],
-    'documento' => 'required|numeric|unique:TablaUsuario,NumeroDocumento',
+    'documento' => 'required|digits_between:8,11|unique:TablaUsuario,NumeroDocumento',
     'tipoDocumento' => 'required|exists:TablaDocumento,IdDocumento',
     'rol' => 'required|in:Externo,Estudiante,Profesor',
 ], [
@@ -37,6 +37,7 @@ class AuthController extends Controller
     'apellidos.required' => 'Los apellidos son obligatorios.',
     'apellidos.regex' => 'Los apellidos solo pueden contener letras y espacios.',
     'documento.required' => 'El número de documento es obligatorio.',
+    'documento.digits_between' => 'El documento debe tener entre 8 y 11 dígitos.',
     'documento.numeric' => 'El documento debe contener solo números.',
     'documento.unique' => 'Este documento ya está registrado.',
     'tipoDocumento.required' => 'Debe seleccionar un tipo de documento.',
