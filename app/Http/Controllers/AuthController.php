@@ -26,7 +26,7 @@ class AuthController extends Controller
         // 1. Validación de los datos
         $validator = Validator::make($request->all(), [
     'nombre' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\sñÑáéíóúÁÉÍÓÚ]+$/'],
-    'apellidos' => ['nullable', 'string', 'max:255', 'regex:/^[a-zA-Z\sñÑáéíóúÁÉÍÓÚ]+$/'],
+    'apellidos' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\sñÑáéíóúÁÉÍÓÚ]+$/'],
     'documento' => 'required|numeric|unique:TablaUsuario,NumeroDocumento',
     'tipoDocumento' => 'required|exists:TablaDocumento,IdDocumento',
     'rol' => 'required|in:Externo,Estudiante,Profesor',
