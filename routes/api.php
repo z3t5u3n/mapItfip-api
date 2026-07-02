@@ -13,7 +13,9 @@ use App\Http\Controllers\ReporteMapaController;
 | API Routes
 |--------------------------------------------------------------------------
 */
-Route::post('/', [AuthController::class, 'register']);
+Route::post('/', function () {
+    return 'Cargando API...';
+});
 // Rutas públicas (no requieren autenticación)
 Route::post('/registro', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
