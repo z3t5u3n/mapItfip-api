@@ -13,7 +13,7 @@ use App\Http\Controllers\ReporteMapaController;
 | API Routes
 |--------------------------------------------------------------------------
 */
-Route::post('/', function () {
+Route::get('/', function () {
     return 'Cargando API...';
 });
 // Rutas públicas (no requieren autenticación)
